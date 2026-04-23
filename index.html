@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Evaluación: Mantenimiento Preventivo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f0ff 0%, #f0e6ff 50%, #ffe0f0 100%);
+            font-family: 'Segoe UI', 'Roboto', 'Poppins', system-ui, sans-serif;
+            padding: 1rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-wrapper {
+            max-width: 780px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffffdd;
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.2rem;
+            border-bottom: 4px solid #3a86ff;
+            padding-bottom: 0.7rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #1e6f9f, #e67e22);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.2px;
+        }
+
+        .sub {
+            color: #e67e22;
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+            font-weight: 600;
+        }
+
+        .progress-area {
+            background: #e6e0f0;
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #1a4a6e;
+            font-weight: 700;
+        }
+
+        .question-counter {
+            font-weight: 800;
+            background: #ffcc88;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            color: #5a3a1a;
+        }
+
+        .score-badge {
+            background: #88ccaa;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-weight: 700;
+            color: #1a4a2e;
+        }
+
+        .question-card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            padding: 1.3rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            border-left: 8px solid #3a86ff;
+            border-right: 1px solid #d0e0f0;
+        }
+
+        .question-text {
+            font-size: 1.08rem;
+            font-weight: 800;
+            color: #2c3e66;
+            margin-bottom: 1.2rem;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            cursor: pointer;
+            padding: 0.6rem 0.8rem;
+            border-radius: 1rem;
+            background: #fefaf5;
+            border: 2px solid #e0d0c0;
+            transition: all 0.15s;
+        }
+
+        .option:hover {
+            background: #fff4e6;
+            border-color: #e6b87e;
+            transform: scale(1.01);
+        }
+
+        input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 1.2rem;
+            height: 1.2rem;
+            border: 2px solid #e67e22;
+            border-radius: 50%;
+            margin-top: 0.1rem;
+            cursor: pointer;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        input[type="radio"]:checked {
+            background-color: #e67e22;
+            border-color: #e67e22;
+            box-shadow: inset 0 0 0 3px white;
+        }
+
+        .option label {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            cursor: pointer;
+            color: #2c3e66;
+            font-weight: 600;
+        }
+
+        .feedback {
+            margin-top: 0.8rem;
+            padding: 0.7rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            background: #fef7e8;
+            border-left: 5px solid;
+            line-height: 1.4;
+            color: #2c3e50;
+        }
+
+        .feedback.correct {
+            border-left-color: #44aa66;
+            background: #e0ffe8;
+        }
+
+        .feedback.incorrect {
+            border-left-color: #ff6666;
+            background: #ffe6e6;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            border: none;
+            background: #ddd0c0;
+            color: #4a3a2a;
+            font-weight: 800;
+            padding: 0.6rem 1.3rem;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: #3a86ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2a6ad0;
+            transform: scale(1.02);
+        }
+
+        .btn-secondary {
+            background: #e67e22;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #d46a10;
+        }
+
+        .btn-reset {
+            background: #cc6644;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #aa4422;
+        }
+
+        .btn-success {
+            background: #44aa66;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #338855;
+        }
+
+        .results-area {
+            margin-top: 1.5rem;
+            background: #fff2e0;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            border: 2px solid #ffaa33;
+            display: none;
+        }
+
+        .results-area h3 {
+            color: #cc5500;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-summary {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: bold;
+            color: #1f4a2e;
+        }
+
+        .result-detail {
+            max-height: 260px;
+            overflow-y: auto;
+            font-size: 0.8rem;
+        }
+
+        .result-item {
+            padding: 0.4rem;
+            border-bottom: 1px solid #ffd9a0;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            margin-top: 1.2rem;
+            color: #aa8855;
+        }
+
+        @media (max-width: 550px) {
+            .quiz-wrapper {
+                padding: 1rem;
+            }
+            .question-text {
+                font-size: 0.98rem;
+            }
+            .option label {
+                font-size: 0.88rem;
+            }
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="quiz-wrapper">
+    <div class="header">
+        <h1>🔧 Mantenimiento Preventivo</h1>
+        <div class="sub">Diagnóstico, riesgos físicos, termodinámica, software y buenas prácticas</div>
+    </div>
+
+    <div class="progress-area">
+        <span class="question-counter" id="questionCounter">Pregunta 1 / 20</span>
+        <span class="score-badge" id="liveScore">✅ Aciertos: 0</span>
+    </div>
+
+    <div id="questionContainer"></div>
+
+    <div class="nav-buttons">
+        <button id="prevBtn" class="btn btn-secondary">◀ Anterior</button>
+        <button id="nextBtn" class="btn btn-primary">Siguiente ▶</button>
+        <button id="resetBtn" class="btn btn-reset">⟳ Reiniciar</button>
+        <button id="finalScoreBtn" class="btn btn-success">📊 Ver total</button>
+    </div>
+
+    <div id="resultsPanel" class="results-area"></div>
+    <footer>📌 Selecciona una opción → retroalimentación inmediata. Al finalizar, revisa tu puntuación.</footer>
+</div>
+
+<script>
+    // ==================== DATOS DEL CUESTIONARIO (20 preguntas) ====================
+    const questionsData = [
+        { text: "Un equipo ubicado a nivel del suelo presenta fallas recurrentes de temperatura. ¿Cuál es la causa técnica principal según el mapa de riesgos físicos?",
+          options: ["La obstrucción pasiva por la falta de corrientes de aire naturales en niveles bajos.", "La succión activa de los ventiladores que actúan como aspiradoras de partículas pesadas y hollín.", "El incremento de la humedad relativa que se condensa cerca de superficies frías.", "La tensión mecánica en los cables que impide el cierre hermético del gabinete."],
+          correct: "b",
+          explanation: "Correcta (b): Los ventiladores en el suelo actúan como 'aspiradoras de polvo, hollín y pelo', aumentando drásticamente la absorción de residuos."
+        },
+        { text: "Durante la fase de 'Fusión' en la degradación térmica, ¿qué proceso físico ocurre dentro del hardware?",
+          options: ["El polvo se ioniza y comienza a generar arcos eléctricos de baja intensidad.", "Las micropartículas se solidifican instantáneamente debido a la falta de flujo de aire.", "El ambiente cálido altera el estado físico de la suciedad, preparándola para su adherencia.", "Los filtros antipolvo pierden su capacidad electrostática por el exceso de calor."],
+          correct: "c",
+          explanation: "Correcta (c): La fusión ocurre cuando el calor ambiental altera el estado físico de la suciedad antes de su solidificación."
+        },
+        { text: "¿Por qué el 'Corte Mecánico' (botón físico) se considera un riesgo oculto para la fuente de poder?",
+          options: ["Porque genera un pico de tensión inversa que quema los capacitores de entrada.", "Porque interrumpe operaciones críticas en segundo plano y reduce la vida útil de los componentes de almacenamiento y alimentación.", "Porque descalibra los sensores térmicos de la placa base al no enviar la señal de apagado.", "Porque impide que los ventiladores sigan girando por inercia para enfriar los componentes."],
+          correct: "b",
+          explanation: "Correcta (b): El corte abrupto corrompe datos y daña severamente la longevidad de la fuente y las unidades de almacenamiento."
+        },
+        { text: "En una auditoría de 'Ecosistema Digital', se detecta un SSD al 98% de su capacidad. ¿Cuál es la recomendación técnica inmediata?",
+          options: ["Desfragmentar la unidad para consolidar el espacio libre y mejorar el acceso.", "Ejecutar una poda digital profunda para liberar al menos un 20% de margen de respiro.", "Formatear la unidad en un sistema de archivos que soporte mayor densidad de datos.", "Desactivar la función TRIM para evitar ciclos de escritura innecesarios en sectores críticos."],
+          correct: "b",
+          explanation: "Correcta (b): Se establece un 'Margen de Respiro' mínimo del 20% de espacio libre para que el sistema operativo funcione correctamente."
+        },
+        { text: "¿Cuál es el beneficio termodinámico de una gestión de cables (Cable Management) optimizada?",
+          options: ["Reduce la resistencia eléctrica al evitar curvas cerradas en los cables de 12V.", "Mejora la estética para facilitar la identificación de fallas visuales en los LEDs.", "Mejora drásticamente la aerodinámica y el flujo de aire interno del gabinete.", "Evita la inducción electromagnética entre los cables de datos y los de energía."],
+          correct: "c",
+          explanation: "Correcta (c): Un gabinete con cables ordenados permite que el aire circule sin obstáculos, optimizando la refrigeración."
+        },
+        { text: "Se observa la formación de 'hollín' sobre las pistas de la placa base. ¿Cuál es el peligro inminente según la termodinámica del hardware?",
+          options: ["El hollín actúa como un aislante térmico que sobrecalienta los VRM.", "El hollín solidificado actúa como conductor eléctrico, pudiendo causar cortocircuitos irreversibles.", "La rugosidad del hollín impide que los pinceles de cerdas suaves retiren el polvo.", "El hollín reacciona con el silicio del procesador degradando su litografía."],
+          correct: "b",
+          explanation: "Correcta (b): En la etapa de 'Falla Crítica', el hollín sólido es un conductor que amenaza la integridad de los circuitos."
+        },
+        { text: "Ante un aviso de 'Alta Temperatura Constante' (Incidencia 01), ¿qué acción de mantenimiento preventivo es prioritaria?",
+          options: ["Actualizar los drivers del chipset para optimizar el consumo de energía.", "Realizar una limpieza física de microprocesador y disipador usando un soplador o aspiradora especial.", "Reinstalar el sistema operativo para eliminar procesos de software pesados.", "Cambiar la ubicación del equipo a una zona segura contra derrames."],
+          correct: "b",
+          explanation: "Correcta (b): La limpieza del área de mayor generación térmica (procesador/disipador) es la intervención física directa para resolver fallas térmicas."
+        },
+        { text: "¿Cuál es la diferencia crítica entre el mantenimiento de un HDD y un SSD según las rutinas mensuales?",
+          options: ["El SSD requiere limpieza física con alcohol isopropílico y el HDD no.", "El HDD debe ser desfragmentado regularmente, mientras que en el SSD esta acción está estrictamente advertida como no aplicable.", "El HDD utiliza la función TRIM para organizar sectores y el SSD no.", "El SSD requiere una auditoría de conexiones más frecuente debido a su velocidad de datos."],
+          correct: "b",
+          explanation: "Correcta (b): La desfragmentación solo aplica a discos mecánicos (HDD); en SSD está advertida como dañina."
+        },
+        { text: "Al intervenir un equipo, se aplica la 'Regla Cero'. ¿En qué consiste técnicamente?",
+          options: ["Verificar que no existan virus en la memoria caché del sistema.", "Asegurarse de que el técnico no tenga carga estática antes de tocar la placa.", "Verificar que el equipo esté 100% desconectado de la corriente eléctrica.", "Realizar un backup completo de los datos antes de abrir el gabinete."],
+          correct: "c",
+          explanation: "Correcta (c): El protocolo de limpieza física define la desconexión total como paso indispensable previo a cualquier intervención."
+        },
+        { text: "¿Por qué el 'Apagado por Sistema Operativo' maximiza la vida útil de los componentes?",
+          options: ["Porque reduce la velocidad de los ventiladores gradualmente antes de detenerlos.", "Porque ejecuta una secuencia de cierre controlada por software que finaliza procesos de escritura de forma segura.", "Porque descarga la electricidad estática acumulada en el chasis del equipo.", "Porque desconecta la fuente de alimentación de la red eléctrica externa automáticamente."],
+          correct: "b",
+          explanation: "Correcta (b): Un apagado ordenado garantiza la integridad de los datos y evita cortes abruptos."
+        },
+        { text: "¿Qué impacto tiene el mantenimiento preventivo en la curva del ciclo de vida del hardware?",
+          options: ["Convierte la curva de desgaste exponencial en una progresión lineal ascendente.", "Mantiene el rendimiento y salud del equipo en niveles altos, evitando una caída catastrófica prematura.", "Garantiza que el hardware nunca sufra desgaste natural independientemente del uso.", "Permite que el equipo supere los 10 años de vida sin necesidad de actualizaciones de software."],
+          correct: "b",
+          explanation: "Correcta (b): El gráfico comparativo muestra que con mantenimiento la salud del equipo decrece mucho más lento."
+        },
+        { text: "En el contexto de la 'Auditoría de Conexiones', ¿cuál es el procedimiento correcto para módulos de memoria y tarjetas?",
+          options: ["Aplicar aire comprimido en los conectores mientras están insertados.", "Verificar que estén asentados de manera firme y perpendicular en sus ranuras correspondientes.", "Engrasar los contactos con lubricante conductor para mejorar la transferencia.", "Cambiarlos de posición cada mes para evitar el desgaste de los pines."],
+          correct: "b",
+          explanation: "Correcta (b): La integridad estructural depende de que los módulos estén correctamente alineados y fijados."
+        },
+        { text: "Un técnico utiliza un pincel de cerdas suaves en la placa base. ¿Qué residuo específico está intentando remover según el manual?",
+          options: ["Micropartículas de polvo en estado de fusión.", "Derrames accidentales de líquidos que se han secado.", "Hollín en circuitos para removerlo sin dañarlos.", "Pasta térmica seca que se ha desbordado del procesador."],
+          correct: "c",
+          explanation: "Correcta (c): El material instruye el uso de pinceles suaves específicamente para remover hollín en circuitos delicados."
+        },
+        { text: "¿Qué elemento del 'Ecosistema Digital' previene fallas operativas no físicas?",
+          options: ["La limpieza de ventiladores y fuentes de poder.", "El uso de filtros antipolvo en las entradas de aire del gabinete.", "El mantenimiento de drivers y sistema operativo estrictamente actualizados a su última versión.", "La organización de cables para mejorar la aerodinámica digital."],
+          correct: "c",
+          explanation: "Correcta (c): La mayoría de problemas operativos provienen de un software mal gestionado; la actualización constante es una regla de oro."
+        },
+        { text: "¿Cuál es el riesgo técnico de ubicar bebidas cerca de la 'Zona Segura' del PC?",
+          options: ["El aumento de la humedad ambiental que acelera la solidificación del polvo.", "Un derrame accidental puede destruir la electrónica de forma inmediata.", "La atracción de insectos que pueden causar cortocircuitos mecánicos.", "La interferencia electromagnética causada por los recipientes metálicos."],
+          correct: "b",
+          explanation: "Correcta (b): Los líquidos son un 'Riesgo Fatal' capaz de destrucción electrónica instantánea."
+        },
+        { text: "¿Qué acción de mantenimiento digital mejora los tiempos de carga del sistema operativo?",
+          options: ["Realizar copias de seguridad en medios externos de datos críticos.", "Analizar la unidad principal en busca de malware y virus.", "Revisar y auditar la lista de programas de inicio automático.", "Vaciar la papelera de reciclaje de todos los discos mensualmente."],
+          correct: "c",
+          explanation: "Correcta (c): Auditar el inicio automático reduce la carga de procesos innecesarios durante el arranque."
+        },
+        { text: "Según la 'Frontera 2: Ecosistema Interno', ¿cuál es el objetivo de la auditoría de conexiones?",
+          options: ["Medir el voltaje de salida de la fuente de poder bajo carga máxima.", "Prevenir cortes abruptos de datos mediante la firmeza de conectores de energía y datos.", "Verificar que los cables del panel frontal estén invertidos para evitar ruidos.", "Asegurar que los ventiladores giren en sentido contrario a las manecillas del reloj."],
+          correct: "b",
+          explanation: "Correcta (b): La firmeza en conectores diminutos y de discos duros evita interrupciones en el flujo de información."
+        },
+        { text: "¿Qué implicación tiene la limpieza física frente al riesgo de energía estática?",
+          options: ["La limpieza física elimina la estática al remover el polvo ionizado del gabinete.", "El uso de sopladores aumenta la estática, por lo que el equipo debe estar desconectado y manipulado con precaución.", "La energía estática solo es relevante cuando el equipo está conectado a la corriente.", "Los pinceles de cerdas suaves generan campos magnéticos que dañan los SSD."],
+          correct: "b",
+          explanation: "Correcta (b): La manipulación del interior requiere considerar el riesgo de estática; desconectar y tener precaución protege los componentes."
+        },
+        { text: "¿Cuál es la 'Regla de Oro' del software respecto a la procedencia de las aplicaciones?",
+          options: ["Instalar aplicaciones solo si han sido recomendadas por otros técnicos.", "No instalar software de origen dudoso ni otorgar permisos a sitios web de reputación cuestionable.", "Ejecutar todas las aplicaciones como administrador para evitar conflictos de permisos.", "Desactivar el antivirus antes de instalar software pesado para acelerar el proceso."],
+          correct: "b",
+          explanation: "Correcta (b): La política de 'Cero Confianza' es fundamental para mantener la integridad del ecosistema digital."
+        },
+        { text: "¿Qué se entiende por 'Poda Digital' en el mantenimiento preventivo?",
+          options: ["Eliminar físicamente los componentes de hardware que ya no se utilizan.", "Realizar auditorías para eliminar regularmente aplicaciones y archivos temporales que no se utilicen.", "Recortar los cables sobrantes de la fuente de poder para mejorar el flujo de aire.", "Desactivar núcleos del procesador para reducir el consumo de energía y calor."],
+          correct: "b",
+          explanation: "Correcta (b): La poda digital es una rutina de optimización de software enfocada en liberar recursos eliminando lo innecesario."
+        }
+    ];
+
+    let userAnswers = new Array(20).fill(null);
+    let currentIndex = 0;
+
+    const questionContainer = document.getElementById('questionContainer');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const finalScoreBtn = document.getElementById('finalScoreBtn');
+    const questionCounterSpan = document.getElementById('questionCounter');
+    const liveScoreSpan = document.getElementById('liveScore');
+    const resultsPanel = document.getElementById('resultsPanel');
+
+    function updateLiveScore() {
+        let correctCount = 0;
+        for (let i = 0; i < userAnswers.length; i++) {
+            if (userAnswers[i] && userAnswers[i] === questionsData[i].correct) correctCount++;
+        }
+        liveScoreSpan.textContent = `✅ Aciertos: ${correctCount} / 20`;
+        return correctCount;
+    }
+
+    function saveAnswer(selectedLetter) {
+        userAnswers[currentIndex] = selectedLetter;
+        updateLiveScore();
+        renderCurrentQuestion();
+    }
+
+    function renderCurrentQuestion() {
+        const q = questionsData[currentIndex];
+        const selected = userAnswers[currentIndex];
+        const letters = ['a', 'b', 'c', 'd'];
+        let optionsHtml = '';
+        q.options.forEach((opt, idx) => {
+            const letter = letters[idx];
+            const isChecked = (selected === letter);
+            optionsHtml += `
+                <div class="option" data-letter="${letter}">
+                    <input type="radio" name="question" value="${letter}" id="opt_${letter}" ${isChecked ? 'checked' : ''}>
+                    <label for="opt_${letter}"><strong>${letter.toUpperCase()})</strong> ${opt}</label>
+                </div>
+            `;
+        });
+
+        let feedbackHtml = '';
+        if (selected) {
+            const isCorrect = (selected === q.correct);
+            const correctLetter = q.correct;
+            const correctText = q.options[letters.indexOf(correctLetter)];
+            const explanation = q.explanation;
+            if (isCorrect) {
+                feedbackHtml = `<div class="feedback correct">✅ <strong>¡Correcto!</strong> ${explanation}</div>`;
+            } else {
+                feedbackHtml = `<div class="feedback incorrect">❌ <strong>Incorrecto.</strong> La respuesta correcta es ${correctLetter.toUpperCase()}) ${correctText}.<br>${explanation}</div>`;
+            }
+        } else {
+            feedbackHtml = `<div class="feedback" style="border-left-color:#ffcc88; background:#fff5e6;">⚡ Selecciona una opción para ver la retroalimentación.</div>`;
+        }
+
+        const html = `
+            <div class="question-card">
+                <div class="question-text">${q.text}</div>
+                <div class="options" id="optionsContainer">
+                    ${optionsHtml}
+                </div>
+                ${feedbackHtml}
+            </div>
+        `;
+        questionContainer.innerHTML = html;
+
+        // Event listeners
+        const optionDivs = document.querySelectorAll('.option');
+        optionDivs.forEach(div => {
+            const radio = div.querySelector('input[type="radio"]');
+            const letter = div.getAttribute('data-letter');
+            if (radio) {
+                radio.addEventListener('change', () => {
+                    if (radio.checked) saveAnswer(letter);
+                });
+            }
+            div.addEventListener('click', (e) => {
+                if (e.target.tagName !== 'INPUT') {
+                    const radioInside = div.querySelector('input');
+                    if (radioInside && !radioInside.checked) {
+                        radioInside.checked = true;
+                        saveAnswer(letter);
+                    }
+                }
+            });
+        });
+
+        questionCounterSpan.textContent = `Pregunta ${currentIndex+1} / 20`;
+    }
+
+    function showFinalResults() {
+        let correctCount = 0;
+        let detailsHtml = '';
+        for (let i = 0; i < questionsData.length; i++) {
+            const q = questionsData[i];
+            const userAns = userAnswers[i];
+            const isCorrect = (userAns === q.correct);
+            if (isCorrect) correctCount++;
+            const statusIcon = isCorrect ? '✅' : '❌';
+            const userShow = userAns ? userAns.toUpperCase() : '—';
+            const correctShow = q.correct.toUpperCase();
+            detailsHtml += `
+                <div class="result-item">
+                    <span style="min-width: 30px;">${statusIcon}</span>
+                    <span><strong>Pregunta ${i+1}</strong> (Tu respuesta: ${userShow} / Correcta: ${correctShow})</span>
+                </div>
+            `;
+        }
+        const percent = Math.round((correctCount / 20) * 100);
+        resultsPanel.innerHTML = `
+            <h3>📊 Resultado final</h3>
+            <div class="result-summary">🎯 Aciertos: ${correctCount} de 20 (${percent}%)</div>
+            <div class="result-detail">${detailsHtml}</div>
+            <button id="closeResultsBtn" class="btn btn-secondary" style="margin-top: 10px; width:100%;">✖ Cerrar resumen</button>
+        `;
+        resultsPanel.style.display = 'block';
+        document.getElementById('closeResultsBtn')?.addEventListener('click', () => {
+            resultsPanel.style.display = 'none';
+        });
+        alert(`📊 Cuestionario completado.\nAciertos: ${correctCount} de 20 (${percent}%)\nRevisa el resumen detallado en pantalla.`);
+    }
+
+    function nextQuestion() {
+        if (currentIndex < 19) {
+            currentIndex++;
+            renderCurrentQuestion();
+        } else {
+            const unanswered = userAnswers.filter(a => a === null).length;
+            if (unanswered > 0) {
+                if (confirm(`Aún tienes ${unanswered} pregunta(s) sin responder. ¿Deseas finalizar de todas formas? Las no respondidas se contarán como incorrectas.`)) {
+                    showFinalResults();
+                }
+            } else {
+                showFinalResults();
+            }
+        }
+    }
+
+    function prevQuestion() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            renderCurrentQuestion();
+        } else {
+            alert("Ya estás en la primera pregunta.");
+        }
+    }
+
+    function resetQuiz() {
+        if (confirm("¿Reiniciar todo el cuestionario? Se perderán todas las respuestas.")) {
+            userAnswers = new Array(20).fill(null);
+            currentIndex = 0;
+            resultsPanel.style.display = 'none';
+            updateLiveScore();
+            renderCurrentQuestion();
+        }
+    }
+
+    prevBtn.addEventListener('click', prevQuestion);
+    nextBtn.addEventListener('click', nextQuestion);
+    resetBtn.addEventListener('click', resetQuiz);
+    finalScoreBtn.addEventListener('click', showFinalResults);
+
+    renderCurrentQuestion();
+    updateLiveScore();
+</script>
+</body>
+</html>
